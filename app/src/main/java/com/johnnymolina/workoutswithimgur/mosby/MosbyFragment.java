@@ -1,4 +1,5 @@
 package com.johnnymolina.workoutswithimgur.mosby;
+
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
@@ -38,12 +39,13 @@ import icepick.Icepick;
  * @author Hannes Dorfmann
  * @since 1.0.0
  */
+
 public abstract class MosbyFragment extends Fragment {
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FragmentArgs.inject(this);
-        Icepick.restoreInstanceState(this, savedInstanceState);
+        FragmentArgs.inject(this);// read @Arg fields
+        Icepick.restoreInstanceState(this, savedInstanceState); //restore @State fields
     }
 
     @Override public void onSaveInstanceState(Bundle outState) {
