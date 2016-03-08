@@ -1,23 +1,24 @@
-package com.johnnymolina.workoutswithimgur;
+package com.johnnymolina.workoutswithimgur.views;
 
 import android.app.Activity;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.johnnymolina.workoutswithimgur.R;
+import com.johnnymolina.workoutswithimgur.base.BaseFragment;
 import com.johnnymolina.workoutswithimgur.dummy.DummyContent;
 
 /**
  * A fragment representing a single Album detail screen.
- * This fragment is either contained in a {@link AlbumListActivity}
+ * This fragment is either contained in a {@link MainActivity}
  * in two-pane mode (on tablets) or a {@link AlbumDetailActivity}
  * on handsets.
  */
-public class AlbumDetailFragment extends Fragment {
+public class AlbumDetailFragment extends BaseFragment {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
