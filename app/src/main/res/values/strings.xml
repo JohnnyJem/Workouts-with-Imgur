@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Workouts with Imgur</string>
     <string name="title_album_detail">Album Detail</string>
+    <string name="drawer_item_menu_drawer">Workouts with Imgur</string>
+    <string name="action_settings">action settings</string>
+    <string name="test_text">Main Fragment</string>
 </resources>

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hannesdorfmann.fragmentargs.FragmentArgs;
+import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
 
 import butterknife.ButterKnife;
 import icepick.Icepick;
@@ -40,6 +41,7 @@ import icepick.Icepick;
  * @since 1.0.0
  */
 
+@FragmentWithArgs
 public abstract class MosbyFragment extends Fragment {
 
     @Override public void onCreate(Bundle savedInstanceState) {

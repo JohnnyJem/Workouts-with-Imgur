@@ -2,7 +2,10 @@ package com.johnnymolina.workoutswithimgur;
 
 import android.app.Application;
 
+import com.johnnymolina.workoutswithimgur.other.ReleaseTree;
 import com.squareup.leakcanary.LeakCanary;
+
+import timber.log.Timber;
 
 /**
  * Created by Johnny on 3/7/2016.
@@ -14,7 +17,19 @@ public class ImgurApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        LeakCanary.install(this);
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree(){
+                //Add the line number to the tag.
+                @Override
+                protected String createStackElementTag(StackTraceElement element) {
+                    return super.createStackElementTag(element) + ':' + element.getLineNumber();
+                }
+            });
+            LeakCanary.install(this);
+        }else{
+            //release mode
+            Timber.plant(new ReleaseTree());
+        }
         initializeInjector();
     }
 

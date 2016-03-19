@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/CustomDrawerTheme">
+
+    <group android:id="@id/material_drawer_menu_default_group">
+        <item
+            android:id="@+id/menu_2"
+            android:title="Workouts with Imgur"
+            app:showAsAction="never">
+            <menu>
+                <item
+                    android:id="@+id/sub_menu_1"
+                    android:title="Library"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/sub_menu_2"
+                    android:title="Browse Imgur"
+                    app:showAsAction="never" />
+                <item
+                    android:id="@+id/sub_menu_3"
+                    android:title="Settings"
+                    app:showAsAction="never" />
+            </menu>
+        </item>
+
+    </group>
+    <group android:id="@+id/md_menu_second_group">
+        <item
+            android:id="@+id/action_settings"
+            android:orderInCategory="100"
+            android:title="@string/action_settings"
+            app:showAsAction="ifRoom" />
+    </group>
+</menu>
