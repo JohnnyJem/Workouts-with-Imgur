@@ -3,12 +3,11 @@ package com.johnnymolina.workoutswithimgur.views;
 import android.os.Bundle;
 
 import com.hannesdorfmann.mosby.mvp.viewstate.RestorableViewState;
-import com.johnnymolina.workoutswithimgur.interfaces.MainActivityView;
 
 /**
  * Created by Johnny on 3/18/2016.
  */
-public class MainFragmentViewState implements RestorableViewState<MainActivityView> {
+public class MainFragmentViewState implements RestorableViewState<MainFragmentView> {
 
     private final String KEY_STATE = getClass().getName().toString() + "currentState";
 
@@ -24,20 +23,20 @@ public class MainFragmentViewState implements RestorableViewState<MainActivityVi
     }
 
     @Override
-    public RestorableViewState<MainActivityView> restoreInstanceState(Bundle in) {
+    public RestorableViewState<MainFragmentView> restoreInstanceState(Bundle in) {
         currentState = in.getInt(KEY_STATE);
         return restoreInstanceState(in);
     }
 
 
     @Override
-    public void apply(MainActivityView mainActivityView, boolean b) {
+    public void apply(MainFragmentView viewCallback, boolean b) {
 
         if (currentState == STATE_SHOWING_VIEW) {
-            mainActivityView.showView();
+            viewCallback.showView();
         }
         else {
-            mainActivityView.showLoading();
+            viewCallback.showLoading();
         }
     }
 

@@ -1,24 +1,53 @@
 package com.johnnymolina.workoutswithimgur.views;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
+import com.hannesdorfmann.mosby.mvp.viewstate.MvpViewStateFragment;
+import com.hannesdorfmann.mosby.mvp.viewstate.RestorableViewState;
+import com.johnnymolina.workoutswithimgur.ImgurApplication;
 import com.johnnymolina.workoutswithimgur.R;
-import com.johnnymolina.workoutswithimgur.base.BaseFragment;
-import com.johnnymolina.workoutswithimgur.interfaces.MainFragmentView;
+import com.johnnymolina.workoutswithimgur.other.RxBus;
+
+import javax.inject.Inject;
+
+import butterknife.Bind;
+import io.realm.Realm;
 
 @FragmentWithArgs
-public class MainFragment extends BaseFragment implements MainFragmentView {
+public class MainFragment extends MvpViewStateFragment<MainFragmentView, MainFragmentPresenter>
+        implements MainFragmentView {
+    public static final int VIEWFLIPPER_RESULTS = 0;
+    public static final int VIEWFLIPPER_LOADING = 1;
+
+    @Inject ImgurApplication imgurApplication;
+    @Inject RxBus rxBus;
+    @Inject Realm realm;
+
+    @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
+
+
     public MainFragment() {
+
     }
 
+
+    /*---------------------Lifecycle Methods----------------------------*/
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -28,24 +57,63 @@ public class MainFragment extends BaseFragment implements MainFragmentView {
         return rootView;
     }
 
+    /* ------------------Presenter Interaction Methods-----------------*/
+
+    @Override
+    public void loadData(boolean var1) {
+
+    }
+
+    @Override
+    public void showLoading(boolean var1) {
+        getViewState().setStateShowLoading();
+        viewFlipper.setDisplayedChild(VIEWFLIPPER_LOADING);
+    }
+
     @Override
     public void setData() {
 
     }
 
     @Override
-    public void showLoading() {
+    public void showError(Throwable var1, boolean var2) {
+        viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
+        Toast.makeText(getContext(), "error: " + var1.getMessage().toString(), Toast.LENGTH_LONG).show();
+    }
 
+    @Override public void showContent() {
+        getViewState().setStateShowView();
+        viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
+        //contentView.setRefreshing(false);
+    }
+
+
+    /* ---------------------Default Presenter Methods-----------------*/
+    @NonNull @Override
+    public MainFragmentPresenter createPresenter() {
+        return new MainFragmentPresenter(imgurApplication.getAppComponent());
+    }
+
+    @NonNull @Override
+    public MainFragmentPresenter getPresenter() {
+        return super.getPresenter();
+    }
+
+    /* ---------------------Viewstate Methods-----------------*/
+    @NonNull @Override
+    public RestorableViewState createViewState() {
+        return new MainFragmentViewState();
     }
 
     @Override
-    public void showError(Throwable e) {
-
+    public void onNewViewStateInstance() {
+        showContent();
     }
 
     @Override
-    public void showView() {
-
+    public MainFragmentViewState getViewState() {
+        return (MainFragmentViewState) super.getViewState();
     }
+
 }
 

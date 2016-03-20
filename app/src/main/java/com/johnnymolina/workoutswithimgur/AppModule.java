@@ -19,6 +19,7 @@ import io.realm.Realm;
 @Module
 public class AppModule {
     private final String APPLICATION_TAG = "com.johnnymolina.workoutswithimgur";
+
     private ImgurApplication imgurApplication;
     private RxBus _rxBus = null;
     private Realm realm;

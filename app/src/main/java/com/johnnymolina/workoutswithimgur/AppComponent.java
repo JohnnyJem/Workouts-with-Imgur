@@ -1,6 +1,10 @@
 package com.johnnymolina.workoutswithimgur;
 
 import com.johnnymolina.workoutswithimgur.other.RxBus;
+import com.johnnymolina.workoutswithimgur.views.DetailsFragment;
+import com.johnnymolina.workoutswithimgur.views.MainActivity;
+import com.johnnymolina.workoutswithimgur.views.MainFragment;
+import com.johnnymolina.workoutswithimgur.views.MainFragmentPresenter;
 
 import javax.inject.Singleton;
 
@@ -21,13 +25,14 @@ import dagger.Component;
 
 public interface AppComponent {
 
-    //void inject(ActivityMain activity);
-    //void inject(SearchFragment fragment);
-    //void inject(DetailsFrag fragment);
     void inject(ImgurApplication imgurApplication);
+    void inject(MainActivity activity);
+    void inject(MainFragment fragment);
+    void inject(DetailsFragment fragment);
 
 
-
+    //presenters
+    void inject(MainFragmentPresenter presenter);
 
     ImgurApplication imgurApplication();
 
@@ -40,7 +45,6 @@ public interface AppComponent {
     //RestAdapter restAdapter();
 
    // ImgurService imgurService();
-
 
     //public ReposAdapter adapter();
 }

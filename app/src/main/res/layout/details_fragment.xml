@@ -6,16 +6,25 @@
     android:fitsSystemWindows="true"
     tools:context=".views.DetailsFragment"
     tools:ignore="MergeRootFrame">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:text="details fragment"
-        />
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/album_detail_container"
+        android:id="@+id/detail_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true">
+        <ViewFlipper
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/view_flipper">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:text="details fragment"
+                />
+        </ViewFlipper>
+        </android.support.v4.widget.NestedScrollView>
+
+
 </android.support.design.widget.CoordinatorLayout>

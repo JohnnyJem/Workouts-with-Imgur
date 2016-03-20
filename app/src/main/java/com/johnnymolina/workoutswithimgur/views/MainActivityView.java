@@ -1,4 +1,4 @@
-package com.johnnymolina.workoutswithimgur.interfaces;
+package com.johnnymolina.workoutswithimgur.views;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
 

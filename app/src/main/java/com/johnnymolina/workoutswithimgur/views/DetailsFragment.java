@@ -7,21 +7,21 @@ import android.view.ViewGroup;
 
 import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
 import com.johnnymolina.workoutswithimgur.R;
-import com.johnnymolina.workoutswithimgur.base.BaseFragment;
+import com.johnnymolina.workoutswithimgur.mosby.MosbyFragment;
 
 /**
  * Created by Johnny on 3/8/2016.
  */
 
 @FragmentWithArgs
-public class DetailsFragment extends BaseFragment{
+public class DetailsFragment extends MosbyFragment{
     public DetailsFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setRetainInstance(true);
     }
 
     @Override

@@ -10,29 +10,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.johnnymolina.workoutswithimgur.ImgurApplication;
 import com.johnnymolina.workoutswithimgur.R;
 import com.johnnymolina.workoutswithimgur.base.BaseActivity;
+import com.johnnymolina.workoutswithimgur.other.RxBus;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
+import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * An Activity holding 3 fragment tabs.
  */
 public class MainActivity extends BaseActivity {
     private final String TAG = getClass().getSimpleName();
-    public static final String KEY_SHOW_ACTION =
-            "com.johnnymolina.workoutswithimgur.views.MainActivity.SHOW_ACTION";
-
+    public static final String KEY_SHOW_ACTION = "com.johnnymolina.workoutswithimgur.views.MainActivity.SHOW_ACTION";
     public static final String FRAGMENT_TAG_MAIN = "mainFragmentTag";
     public static final String FRAGMENT_TAG_DETAILS = "detailsFragmentTag";
 
     public static final String VIEWSTATE0 = "0";
     public static final String VIEWSTATE1 = "1";
     public static final String VIEWSTATE2 = "2";
+
+    private CompositeSubscription subscriptions;
+
+    @Inject ImgurApplication imgurApplication;
+    @Inject RxBus rxBus;
 
     MainFragment mainFragment;
     DetailsFragment detailsFragment;
@@ -91,6 +100,36 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        subscriptions = new CompositeSubscription();
+        subscriptions
+                .add(rxBus.toObserverable()//
+                        .compose(bindToLifecycle())//optional since we are using a compositeSubscription();
+                        .subscribe(new Action1<Object>() {
+                            @Override
+                            public void call(Object event) {
+                               //Do something with the object passed through the event bus.
+                                // If many objects use switch.
+                            }
+                        }));
+    }
+
+    @Override
+    protected void onStop() {
+        subscriptions.unsubscribe();//make sure to unsubscribe.
+        super.onStop();
+    }
+
+    //Init Injection of our dependencies. This occurs before super.OnCreate() is called;
+    @Override
+    protected void injectDependencies() {
+        super.injectDependencies();
+        ImgurApplication imgurApplication = (ImgurApplication) getApplication();
+        imgurApplication.getAppComponent().inject(this);
+    }
+
     @Override protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
@@ -140,7 +179,6 @@ public class MainActivity extends BaseActivity {
 
         return false;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

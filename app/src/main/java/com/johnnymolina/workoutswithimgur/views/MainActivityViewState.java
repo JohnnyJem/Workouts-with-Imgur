@@ -3,7 +3,6 @@ package com.johnnymolina.workoutswithimgur.views;
 import android.os.Bundle;
 
 import com.hannesdorfmann.mosby.mvp.viewstate.RestorableViewState;
-import com.johnnymolina.workoutswithimgur.interfaces.MainActivityView;
 
 /**
  * Created by Johnny Molina on 7/19/2015.
