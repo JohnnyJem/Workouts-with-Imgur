@@ -67,7 +67,7 @@ dependencies {
 
     //Database
     compile 'io.realm:realm-android:0.87.5'
-    compile 'com.minimize.android:rxrecycler-adapter:1.2.1'
+    compile 'com.github.thorbenprimke:realm-recyclerview:0.9.12'
     compile 'com.github.dmytrodanylyk.realm-browser:library:0.0.3'
 
     //Networking

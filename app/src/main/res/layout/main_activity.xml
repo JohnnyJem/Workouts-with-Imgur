@@ -6,7 +6,10 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".views.MainActivity">
-
+    <ViewFlipper
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/view_flipper">
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
@@ -28,5 +31,7 @@
         tools:context=".views.MainActivity">
         <!-- The main content view -->
         <include layout="@layout/merge_main_split_pane" />
+
     </LinearLayout>
+    </ViewFlipper>
 </android.support.design.widget.CoordinatorLayout>

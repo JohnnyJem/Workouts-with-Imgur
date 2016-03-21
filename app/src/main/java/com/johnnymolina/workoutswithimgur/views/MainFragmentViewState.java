@@ -33,10 +33,10 @@ public class MainFragmentViewState implements RestorableViewState<MainFragmentVi
     public void apply(MainFragmentView viewCallback, boolean b) {
 
         if (currentState == STATE_SHOWING_VIEW) {
-            viewCallback.showView();
+            viewCallback.showContent();
         }
         else {
-            viewCallback.showLoading();
+            viewCallback.showLoading(true);
         }
     }
 

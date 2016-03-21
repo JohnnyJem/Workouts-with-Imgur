@@ -2,7 +2,6 @@ package com.johnnymolina.workoutswithimgur.mosby;
 
 import android.support.annotation.NonNull;
 
-import com.hannesdorfmann.mosby.mvp.MvpFragment;
 import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 import com.hannesdorfmann.mosby.mvp.MvpView;
 import com.hannesdorfmann.mosby.mvp.delegate.FragmentMvpDelegate;
@@ -13,7 +12,7 @@ import com.hannesdorfmann.mosby.mvp.viewstate.ViewState;
 /**
  * Created by Johnny on 3/19/2016.
  */
-public abstract class MosbyMvpViewStateFragment<V extends MvpView, P extends MvpPresenter<V>> extends MvpFragment<V, P> implements MvpViewStateDelegateCallback<V, P> {
+public abstract class MosbyMvpViewStateFragment<V extends MvpView, P extends MvpPresenter<V>> extends MosbyMvpFragment<V, P> implements MvpViewStateDelegateCallback<V, P> {
     protected ViewState<V> viewState;
     private boolean restoringViewState = false;
 

@@ -7,15 +7,16 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
  */
 public interface MainActivityView extends MvpView {
 
-//    void setData(List<MovieInfo> list);
-//
-//    void setRealmData(List<RealmReturnedMovie> realmList);
+    void loadData(boolean var1);
 
-    void showLoading();
+    void showLoading(boolean var1);
 
-    void showError(Throwable e);
+    void setData();
 
-    void showView();
+    void showError(Throwable var1, boolean var2);
+
+    void showContent();
+
 
 
 }

@@ -9,10 +9,10 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
-import com.hannesdorfmann.mosby.mvp.viewstate.MvpViewStateFragment;
 import com.hannesdorfmann.mosby.mvp.viewstate.RestorableViewState;
 import com.johnnymolina.workoutswithimgur.ImgurApplication;
 import com.johnnymolina.workoutswithimgur.R;
+import com.johnnymolina.workoutswithimgur.mosby.MosbyMvpViewStateFragment;
 import com.johnnymolina.workoutswithimgur.other.RxBus;
 
 import javax.inject.Inject;
@@ -21,7 +21,8 @@ import butterknife.Bind;
 import io.realm.Realm;
 
 @FragmentWithArgs
-public class MainFragment extends MvpViewStateFragment<MainFragmentView, MainFragmentPresenter>
+public class MainFragment extends MosbyMvpViewStateFragment
+        <MainFragmentView, MainFragmentPresenter>
         implements MainFragmentView {
     public static final int VIEWFLIPPER_RESULTS = 0;
     public static final int VIEWFLIPPER_LOADING = 1;
@@ -43,6 +44,12 @@ public class MainFragment extends MvpViewStateFragment<MainFragmentView, MainFra
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+    }
+
+    @Override
+    protected void injectDependencies() {
+        super.injectDependencies();
+        ((ImgurApplication) getActivity().getApplication()).getAppComponent().inject(this);
     }
 
     @Override

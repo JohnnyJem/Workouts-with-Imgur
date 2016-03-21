@@ -3,6 +3,7 @@ package com.johnnymolina.workoutswithimgur;
 import com.johnnymolina.workoutswithimgur.other.RxBus;
 import com.johnnymolina.workoutswithimgur.views.DetailsFragment;
 import com.johnnymolina.workoutswithimgur.views.MainActivity;
+import com.johnnymolina.workoutswithimgur.views.MainActivityPresenter;
 import com.johnnymolina.workoutswithimgur.views.MainFragment;
 import com.johnnymolina.workoutswithimgur.views.MainFragmentPresenter;
 
@@ -26,17 +27,19 @@ import dagger.Component;
 public interface AppComponent {
 
     void inject(ImgurApplication imgurApplication);
+
     void inject(MainActivity activity);
+    void inject(MainActivityPresenter presenter);
+
     void inject(MainFragment fragment);
+    void inject(MainFragmentPresenter presenter);
+
     void inject(DetailsFragment fragment);
 
 
-    //presenters
-    void inject(MainFragmentPresenter presenter);
-
+    RxBus rxBus();
     ImgurApplication imgurApplication();
 
-    RxBus rxBus();
 
     //OkHttpClient okHttpClient();
 

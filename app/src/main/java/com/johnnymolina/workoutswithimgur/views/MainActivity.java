@@ -3,16 +3,19 @@ package com.johnnymolina.workoutswithimgur.views;
 import android.animation.LayoutTransition;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import com.hannesdorfmann.mosby.mvp.viewstate.RestorableViewState;
 import com.johnnymolina.workoutswithimgur.ImgurApplication;
 import com.johnnymolina.workoutswithimgur.R;
-import com.johnnymolina.workoutswithimgur.base.BaseActivity;
+import com.johnnymolina.workoutswithimgur.mosby.MosbyMvpViewStateActivity;
 import com.johnnymolina.workoutswithimgur.other.RxBus;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -28,11 +31,14 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * An Activity holding 3 fragment tabs.
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends MosbyMvpViewStateActivity<MainActivityView, MainActivityPresenter> implements MainActivityView{
     private final String TAG = getClass().getSimpleName();
     public static final String KEY_SHOW_ACTION = "com.johnnymolina.workoutswithimgur.views.MainActivity.SHOW_ACTION";
     public static final String FRAGMENT_TAG_MAIN = "mainFragmentTag";
     public static final String FRAGMENT_TAG_DETAILS = "detailsFragmentTag";
+
+    public static final int VIEWFLIPPER_RESULTS = 0;
+    public static final int VIEWFLIPPER_LOADING = 1;
 
     public static final String VIEWSTATE0 = "0";
     public static final String VIEWSTATE1 = "1";
@@ -46,6 +52,7 @@ public class MainActivity extends BaseActivity {
     MainFragment mainFragment;
     DetailsFragment detailsFragment;
 
+    @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.leftPane) ViewGroup leftPane;
     @Nullable @Bind(R.id.rightPane) ViewGroup rightPane;
@@ -122,12 +129,12 @@ public class MainActivity extends BaseActivity {
         super.onStop();
     }
 
+
     //Init Injection of our dependencies. This occurs before super.OnCreate() is called;
     @Override
     protected void injectDependencies() {
         super.injectDependencies();
-        ImgurApplication imgurApplication = (ImgurApplication) getApplication();
-        imgurApplication.getAppComponent().inject(this);
+        ((ImgurApplication) getApplication()).getAppComponent().inject(this);
     }
 
     @Override protected void onNewIntent(Intent intent) {
@@ -194,6 +201,67 @@ public class MainActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+
+     /* ------------------Presenter Interaction Methods-----------------*/
+
+    @Override
+    public void loadData(boolean var1) {
+
+    }
+
+    @Override
+    public void showLoading(boolean var1) {
+        getViewState().setStateShowLoading();
+        viewFlipper.setDisplayedChild(VIEWFLIPPER_LOADING);
+    }
+
+    @Override
+    public void setData() {
+
+    }
+
+    @Override
+    public void showError(Throwable var1, boolean var2) {
+        viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
+        Toast.makeText(this, "error: " + var1.getMessage().toString(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override public void showContent() {
+        getViewState().setStateShowView();
+        viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
+        //contentView.setRefreshing(false);
+    }
+
+
+    /* ---------------------Default Presenter Methods-----------------*/
+    @NonNull @Override
+    public MainActivityPresenter createPresenter() {
+        return new MainActivityPresenter(imgurApplication.getAppComponent());
+    }
+
+    @NonNull @Override
+    public MainActivityPresenter getPresenter() {
+        return super.getPresenter();
+    }
+
+    /* ---------------------Viewstate Methods-----------------*/
+    @NonNull @Override
+    public RestorableViewState createViewState() {
+        return new MainActivityViewState();
+    }
+
+    @Override
+    public void onNewViewStateInstance() {
+        showContent();
+    }
+
+    @Override
+    public MainActivityViewState getViewState() {
+        return (MainActivityViewState) super.getViewState();
     }
 
 }

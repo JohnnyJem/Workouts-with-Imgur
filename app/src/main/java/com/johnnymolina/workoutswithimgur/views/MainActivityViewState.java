@@ -33,10 +33,10 @@ public class MainActivityViewState implements RestorableViewState<MainActivityVi
     public void apply(MainActivityView mainActivityView, boolean b) {
 
         if (currentState == STATE_SHOWING_VIEW) {
-            mainActivityView.showView();
+            mainActivityView.showContent();
         }
         else {
-            mainActivityView.showLoading();
+            mainActivityView.showLoading(true);
         }
     }
 
