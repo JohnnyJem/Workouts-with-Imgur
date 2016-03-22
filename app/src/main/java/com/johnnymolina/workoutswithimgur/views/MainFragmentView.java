@@ -8,7 +8,7 @@ import com.johnnymolina.workoutswithimgur.network.api.model.Album;
  */
 public interface MainFragmentView extends MvpView {
 
-    void loadData(boolean var1);
+    void loadData(String query);
 
     void refreshData(boolean var1);
 
@@ -17,6 +17,8 @@ public interface MainFragmentView extends MvpView {
     void setData(Album var1);
 
     void showError(Throwable e);
+
+    void showSuccess(String message,boolean isVisible);
 
     void showContent();
 

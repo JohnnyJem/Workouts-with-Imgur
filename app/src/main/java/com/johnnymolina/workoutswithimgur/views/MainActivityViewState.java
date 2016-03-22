@@ -25,7 +25,7 @@ public class MainActivityViewState implements RestorableViewState<MainActivityVi
     @Override
     public RestorableViewState<MainActivityView> restoreInstanceState(Bundle in) {
         currentState = in.getInt(KEY_STATE);
-        return restoreInstanceState(in);
+        return null;  //restoreInstanceState(in);
     }
 
 

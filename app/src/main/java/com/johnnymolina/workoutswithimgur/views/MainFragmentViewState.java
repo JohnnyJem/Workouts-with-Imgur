@@ -25,7 +25,7 @@ public class MainFragmentViewState implements RestorableViewState<MainFragmentVi
     @Override
     public RestorableViewState<MainFragmentView> restoreInstanceState(Bundle in) {
         currentState = in.getInt(KEY_STATE);
-        return restoreInstanceState(in);
+        return null;
     }
 
 

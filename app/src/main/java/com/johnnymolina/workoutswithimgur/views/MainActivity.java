@@ -1,11 +1,15 @@
 package com.johnnymolina.workoutswithimgur.views;
 
 import android.animation.LayoutTransition;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +31,14 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 /**
  * An Activity holding 3 fragment tabs.
  */
-public class MainActivity extends MosbyMvpViewStateActivity<MainActivityView, MainActivityPresenter> implements MainActivityView{
+public class MainActivity
+        extends MosbyMvpViewStateActivity<MainActivityView, MainActivityPresenter>
+        implements MainActivityView {
     private final String TAG = getClass().getSimpleName();
     public static final String KEY_SHOW_ACTION = "com.johnnymolina.workoutswithimgur.views.MainActivity.SHOW_ACTION";
     public static final String FRAGMENT_TAG_MAIN = "mainFragmentTag";
@@ -66,7 +73,7 @@ public class MainActivity extends MosbyMvpViewStateActivity<MainActivityView, Ma
         setContentView(R.layout.main_activity);
 
         // Handle Toolbar and Drawer setup
-        if (toolbar!= null){
+        if (toolbar != null) {
             setSupportActionBar(toolbar);
             toolbar.setTitle(R.string.drawer_item_menu_drawer);
             result = new DrawerBuilder()
@@ -79,10 +86,12 @@ public class MainActivity extends MosbyMvpViewStateActivity<MainActivityView, Ma
                             if (drawerItem instanceof Nameable) {
                                 Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
                             }
+
                             return false;
                         }
                     }).build();
         }
+
 
         // Check for previous fragments
         mainFragment = findMainFragment();
@@ -90,11 +99,13 @@ public class MainActivity extends MosbyMvpViewStateActivity<MainActivityView, Ma
 
         if (detailsFragment != null) {
             // details fragment available, so make it visible
+            Timber.i("DetailFragment is not null");
             rightPane.setVisibility(View.VISIBLE);
         }
 
         if (paneContainer != null) {
             // Enable animation
+            Timber.i("paneContainer is not null");
             LayoutTransition transition = new LayoutTransition();
             transition.enableTransitionType(LayoutTransition.CHANGING);
             paneContainer.setLayoutTransition(transition);
@@ -117,7 +128,7 @@ public class MainActivity extends MosbyMvpViewStateActivity<MainActivityView, Ma
                         .subscribe(new Action1<Object>() {
                             @Override
                             public void call(Object event) {
-                               //Do something with the object passed through the event bus.
+                                //Do something with the object passed through the event bus.
                                 // If many objects use switch.
                             }
                         }));
@@ -129,7 +140,6 @@ public class MainActivity extends MosbyMvpViewStateActivity<MainActivityView, Ma
         super.onStop();
     }
 
-
     //Init Injection of our dependencies. This occurs before super.OnCreate() is called;
     @Override
     protected void injectDependencies() {
@@ -137,7 +147,8 @@ public class MainActivity extends MosbyMvpViewStateActivity<MainActivityView, Ma
         ((ImgurApplication) getApplication()).getAppComponent().inject(this);
     }
 
-    @Override protected void onNewIntent(Intent intent) {
+    @Override
+    protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
         String showAction = intent.getStringExtra(KEY_SHOW_ACTION);
@@ -151,7 +162,7 @@ public class MainActivity extends MosbyMvpViewStateActivity<MainActivityView, Ma
                 .replace(R.id.leftPane, fragment, FRAGMENT_TAG_MAIN)
                 .commit();
 
-        if (removeDetailsFragment){
+        if (removeDetailsFragment) {
             removeDetailsFragment();
         }
     }
@@ -169,7 +180,7 @@ public class MainActivity extends MosbyMvpViewStateActivity<MainActivityView, Ma
         return (DetailsFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DETAILS);
     }
 
-    private MainFragment findMainFragment(){
+    private MainFragment findMainFragment() {
         return (MainFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_MAIN);
     }
 
@@ -179,91 +190,118 @@ public class MainActivity extends MosbyMvpViewStateActivity<MainActivityView, Ma
     private boolean removeDetailsFragment() {
         DetailsFragment detailsFragment = findDetailsFragment();
         if (detailsFragment != null) {
-            rightPane.setVisibility(View.GONE);
-            getSupportFragmentManager().beginTransaction().remove(detailsFragment).commit();
-            return true;
+            if (rightPane != null) {
+                rightPane.setVisibility(View.GONE);
+                getSupportFragmentManager().beginTransaction().remove(detailsFragment).commit();
+                return true;
+            }
         }
-
         return false;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
-            navigateUpTo(new Intent(this, MainActivity.class));
+        @Override
+        public boolean onCreateOptionsMenu (Menu menu){
+            getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+            // Retrieve the SearchView and plug it into SearchManager
+            final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+            SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    findMainFragment().loadData(query);
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
             return true;
         }
-        return super.onOptionsItemSelected(item);
-    }
+
+        @Override
+        public boolean onOptionsItemSelected (MenuItem item){
+            int id = item.getItemId();
+            if (id == android.R.id.home) {
+                // This ID represents the Home or Up button. In the case of this
+                // activity, the Up button is shown. For
+                // more details, see the Navigation pattern on Android Design:
+                //
+                // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+                //
+                navigateUpTo(new Intent(this, MainActivity.class));
+                return true;
+            }
+            if (id == R.id.action_search) {
+                Timber.i("actionSearchTouched");
+            }
+            return super.onOptionsItemSelected(item);
+        }
 
 
 
 
      /* ------------------Presenter Interaction Methods-----------------*/
 
-    @Override
-    public void loadData(boolean var1) {
+        @Override
+        public void loadData ( boolean var1){
 
-    }
+        }
 
-    @Override
-    public void showLoading(boolean var1) {
-        getViewState().setStateShowLoading();
-        viewFlipper.setDisplayedChild(VIEWFLIPPER_LOADING);
-    }
+        @Override
+        public void showLoading ( boolean var1){
+            getViewState().setStateShowLoading();
+            viewFlipper.setDisplayedChild(VIEWFLIPPER_LOADING);
+        }
 
-    @Override
-    public void setData() {
+        @Override
+        public void setData () {
 
-    }
+        }
 
-    @Override
-    public void showError(Throwable var1, boolean var2) {
-        viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
-        Toast.makeText(this, "error: " + var1.getMessage().toString(), Toast.LENGTH_LONG).show();
-    }
+        @Override
+        public void showError (Throwable var1,boolean var2){
+            viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
+            Toast.makeText(this, "error: " + var1.getMessage().toString(), Toast.LENGTH_LONG).show();
+        }
 
-    @Override public void showContent() {
-        getViewState().setStateShowView();
-        viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
-        //contentView.setRefreshing(false);
-    }
+        @Override public void showContent () {
+            getViewState().setStateShowView();
+            viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
+            //contentView.setRefreshing(false);
+        }
 
 
     /* ---------------------Default Presenter Methods-----------------*/
-    @NonNull @Override
-    public MainActivityPresenter createPresenter() {
-        return new MainActivityPresenter(imgurApplication.getAppComponent());
-    }
 
-    @NonNull @Override
-    public MainActivityPresenter getPresenter() {
-        return super.getPresenter();
-    }
+        @NonNull @Override
+        public MainActivityPresenter createPresenter() {
+            return new MainActivityPresenter(imgurApplication.getAppComponent());
+        }
+
+        @NonNull @Override
+        public MainActivityPresenter getPresenter () {
+            return super.getPresenter();
+        }
 
     /* ---------------------Viewstate Methods-----------------*/
-    @NonNull @Override
-    public RestorableViewState createViewState() {
-        return new MainActivityViewState();
-    }
+        @NonNull @Override
+        public RestorableViewState createViewState () {
+            return new MainActivityViewState();
+        }
 
-    @Override
-    public void onNewViewStateInstance() {
-        showContent();
-    }
+        @Override
+        public void onNewViewStateInstance () {
+            showContent();
+        }
 
-    @Override
-    public MainActivityViewState getViewState() {
-        return (MainActivityViewState) super.getViewState();
-    }
+        @Override
+        public MainActivityViewState getViewState () {
+            return (MainActivityViewState) super.getViewState();
+        }
 
-}
+    }
 
 

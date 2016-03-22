@@ -10,7 +10,6 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:baselineAligned="false">
-
         <FrameLayout
             android:id="@+id/leftPane"
             android:layout_width="0dp" android:layout_height="match_parent"

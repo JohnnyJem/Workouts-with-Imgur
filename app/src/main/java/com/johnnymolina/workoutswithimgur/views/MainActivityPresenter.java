@@ -27,6 +27,8 @@ public class MainActivityPresenter extends MvpBasePresenter<MainActivityView> {
         initRxBus();
     }
 
+
+
     private void initRxBus() {
         subscriptions = new CompositeSubscription();
         subscriptions

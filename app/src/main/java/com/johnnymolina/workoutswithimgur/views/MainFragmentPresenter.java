@@ -4,14 +4,19 @@ import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.johnnymolina.workoutswithimgur.AppComponent;
 import com.johnnymolina.workoutswithimgur.ImgurApplication;
 import com.johnnymolina.workoutswithimgur.network.ImgurService;
+import com.johnnymolina.workoutswithimgur.network.api.model.Album;
 import com.johnnymolina.workoutswithimgur.network.api.model.Data;
+import com.johnnymolina.workoutswithimgur.network.api.model.Image;
+import com.johnnymolina.workoutswithimgur.network.api.model.realm.RealmAlbum;
+import com.johnnymolina.workoutswithimgur.network.api.model.realm.RealmImage;
 import com.johnnymolina.workoutswithimgur.other.RxBus;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import io.realm.Realm;
+import io.realm.RealmList;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -24,11 +29,11 @@ public class MainFragmentPresenter extends MvpBasePresenter<MainFragmentView> {
 
     @Inject ImgurApplication imgurApplication;
     @Inject RxBus rxBus;
+    @Inject Realm realm;
     @Inject ImgurService imgurService;
 
     CompositeSubscription compositeSubscription;
-    List<Data> dataList;
-
+    Album album;
     String currentQuery;
 
 
@@ -46,6 +51,10 @@ public class MainFragmentPresenter extends MvpBasePresenter<MainFragmentView> {
             if (isViewAttached()) {
                 getView().showLoading(true);//grabbing the view reference
             }
+
+           album = null;
+
+
             //we ask the presenter to perform a search with a query
             imgurService.dataRequest(query) //subscribes to the Observable provided by Retrofit and lets the View know what to display
                     .delay(5, TimeUnit.SECONDS) //wait 5 seconds
@@ -56,6 +65,7 @@ public class MainFragmentPresenter extends MvpBasePresenter<MainFragmentView> {
                         public void onCompleted() {//This is a callback that notifies the observer of the end of the sequence.
                             if (isViewAttached()) {
                                 getView().showContent();//If view IS attached then show the searchList
+                                getView().showSuccess("Data Loaded", true);
                             }
                         }
 
@@ -68,11 +78,12 @@ public class MainFragmentPresenter extends MvpBasePresenter<MainFragmentView> {
 
                         @Override
                         public void onNext(Data data) {
-                            //Todo: convert this Retrofit object into an immutable pojo too
                             // map internal UI objects to Realm objects
                             if (isViewAttached()) {
                                 getView().setData(data.getAlbum());
                             }
+                            album = data.getAlbum();
+
                         }
 
                     });
@@ -82,6 +93,46 @@ public class MainFragmentPresenter extends MvpBasePresenter<MainFragmentView> {
 
     public void loadRealmData(){
         //getView().showLoading;
+    }
+
+    public void saveToRealm(){
+        if (album != null) {
+            // begin & end transcation calls are done for you
+            RealmAlbum realmAlbum = new RealmAlbum();
+            realmAlbum.setId(album.getId());
+            realmAlbum.setTitle(album.getTitle());
+            realmAlbum.setDescription(album.getDescription());
+            album.setLink(album.getLink());
+            album.setImagesCount(album.getImagesCount());
+
+            RealmList<RealmImage> realmImageList = new RealmList<RealmImage>();
+            for (int i = 0; i < album.getImages().size(); i++) {
+                Image image = album.getImages().get(i);
+                RealmImage realmImage = new RealmImage();
+                realmImage.setAlbumId(album.getId());
+                realmImage.setAlbumId(image.getId());
+                realmImage.setTitle(image.getTitle());
+                realmImage.setDescription(image.getDescription());
+                realmImage.setDatetime(image.getDatetime());
+                realmImage.setType(image.getType());
+                realmImage.setAnimated(image.isAnimated());
+                realmImage.setWidth(image.getWidth());
+                realmImage.setHeight(image.getHeight());
+                realmImage.setSize(image.getSize());
+                realmImage.setViews(image.getViews());
+                //realmImage.setBandwidth();
+                realmImage.setLink(image.getLink());
+                realmImageList.add(realmImage);
+            }
+            realmAlbum.setImages(realmImageList);
+
+            realm.beginTransaction();
+            realm.copyToRealm(realmAlbum);
+            realm.commitTransaction();
+            if (isViewAttached()){
+                getView().showSuccess("Succesfully saved to Realm DB", false);
+            }
+    }
     }
 
     public void refreshData(boolean var1){

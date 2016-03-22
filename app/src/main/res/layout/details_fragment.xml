@@ -23,6 +23,7 @@
                 android:textAlignment="center"
                 android:text="details fragment"
                 />
+
         </ViewFlipper>
         </android.support.v4.widget.NestedScrollView>
 
