@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
@@ -13,12 +15,15 @@ import com.hannesdorfmann.mosby.mvp.viewstate.RestorableViewState;
 import com.johnnymolina.workoutswithimgur.ImgurApplication;
 import com.johnnymolina.workoutswithimgur.R;
 import com.johnnymolina.workoutswithimgur.mosby.MosbyMvpViewStateFragment;
+import com.johnnymolina.workoutswithimgur.network.api.model.Album;
 import com.johnnymolina.workoutswithimgur.other.RxBus;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 import io.realm.Realm;
+import timber.log.Timber;
 
 @FragmentWithArgs
 public class MainFragment extends MosbyMvpViewStateFragment
@@ -31,7 +36,11 @@ public class MainFragment extends MosbyMvpViewStateFragment
     @Inject RxBus rxBus;
     @Inject Realm realm;
 
+    Album album;
+
     @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
+    @Bind(R.id.button_request_data) Button button;
+    @Bind(R.id.tv_show_data) TextView dataTextView;
 
 
     public MainFragment() {
@@ -72,20 +81,30 @@ public class MainFragment extends MosbyMvpViewStateFragment
     }
 
     @Override
+    public void refreshData(boolean var1) {
+
+    }
+
+    @Override
     public void showLoading(boolean var1) {
         getViewState().setStateShowLoading();
         viewFlipper.setDisplayedChild(VIEWFLIPPER_LOADING);
     }
 
     @Override
-    public void setData() {
-
+    public void setData(Album album) {
+        if (album!=null){
+            this.album = album;
+            dataTextView.setText(album.getLink());
+        }
     }
 
     @Override
-    public void showError(Throwable var1, boolean var2) {
+    public void showError(Throwable e) {
         viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
-        Toast.makeText(getContext(), "error: " + var1.getMessage().toString(), Toast.LENGTH_LONG).show();
+        Timber.e(e,e.getMessage().toString());
+        Toast.makeText(getContext(), "error: " + e.getMessage().toString(), Toast.LENGTH_LONG).show();
+
     }
 
     @Override public void showContent() {
@@ -106,7 +125,7 @@ public class MainFragment extends MosbyMvpViewStateFragment
         return super.getPresenter();
     }
 
-    /* ---------------------Viewstate Methods-----------------*/
+    /* ---------------------Viewstate Methods-------------------------*/
     @NonNull @Override
     public RestorableViewState createViewState() {
         return new MainFragmentViewState();
@@ -120,6 +139,17 @@ public class MainFragment extends MosbyMvpViewStateFragment
     @Override
     public MainFragmentViewState getViewState() {
         return (MainFragmentViewState) super.getViewState();
+    }
+
+     /* ----------------------------Other Methods-----------------*/
+
+//    protected void setup(){
+//
+//    }
+
+    @OnClick(R.id.button_request_data)
+    public void requestData(){
+        presenter.loadData("JNzjB");
     }
 
 }

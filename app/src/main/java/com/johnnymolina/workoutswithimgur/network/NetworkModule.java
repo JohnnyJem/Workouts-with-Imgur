@@ -1,43 +1,34 @@
 package com.johnnymolina.workoutswithimgur.network;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.johnnymolina.workoutswithimgur.BuildConfig;
+
+import java.io.IOException;
+
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import timber.log.Timber;
+
 /**
- * Static factory methods for creating {@link Endpoint} instances.
  *
  * Created by Johnny Molina on 7/19/2015.
  */
 //Todo: Fix this class to enable retrofit 2 support.
-/*
 @Module
 public class NetworkModule {
-    public static String API_KEY= BuildConfig.MY_IMGUR_API_KEY; //see readme
-    public static String HTTP_REQUEST_DISCOVER="http://api.themoviedb.org";
-    public static final String PRODUCTION_API_URL = "http://image.tmdb.org/t/p/w185//";
-    public static String BASE_URL="http://image.tmdb.org/t/p/";
-
-
-    @Provides
-    @Singleton
-    OkHttpClient provideOkHttpClient() {
-        return new OkHttpClient();
-    }
-
-
-    @Provides
-    @Singleton
-    Endpoint provideEndpoint() {
-        return Endpoints.newFixedEndpoint(HTTP_REQUEST_DISCOVER);
-    }
-
-    @Provides
-    @Singleton
-    RequestInterceptor provideRequestInterceptor(){
-        return  new RequestInterceptor() {
-            @Override
-            public void intercept(RequestFacade request) {
-                request.addHeader("Accept", "application/json");
-            }
-        };
-    }
+    public static String API_KEY = BuildConfig.MY_IMGUR_API_KEY; //see readme
+    public static final String PRODUCTION_API_URL = "https://api.imgur.com/3/";
+    public static String BASE_URL ="https://api.imgur.com";
 
     @Provides
     @Singleton
@@ -45,26 +36,63 @@ public class NetworkModule {
         return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     }
 
+    @Provides
+    @Singleton
+    Interceptor provideInterceptor(){
+        return new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request newRequest = chain.request().newBuilder()
+                        .addHeader("Accept", "application/json")
+                        .addHeader("Authorization","Client-ID " + BuildConfig.MY_IMGUR_API_KEY)
+                        .build();
+                return chain.proceed(newRequest);
+            }
+        };
+    }
 
     @Provides
     @Singleton
-    RestAdapter provideRestAdapter(Endpoint endpoint,
-                                   OkHttpClient client,
-                                   Gson gson,RequestInterceptor requestInterceptor) {
-        return new RestAdapter.Builder()
-                .setClient(new OkClient(client))
-                .setEndpoint(endpoint)
-                .setRequestInterceptor(requestInterceptor)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .setConverter(new GsonConverter(gson))
+    HttpLoggingInterceptor provideHttpLoggingInterceptor(){
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+            @Override public void log(String message) {
+                Timber.tag("OkHttp").d(message);
+            }
+        });
+
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        return logging;
+    }
+
+
+    @Provides
+    @Singleton
+    OkHttpClient provideOkHttpClient(
+            Interceptor Interceptor, HttpLoggingInterceptor httpLoggingInterceptor) {
+        OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+        builder.interceptors().add(Interceptor);
+        builder.interceptors().add(httpLoggingInterceptor);
+        OkHttpClient client = builder.build();
+        return client;
+    }
+
+    @Provides
+    @Singleton
+    Retrofit provideRetrofit(Gson gson, OkHttpClient okHttpClient) {
+        return new Retrofit.Builder()
+                .baseUrl(PRODUCTION_API_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
     }
 
     @Provides
     @Singleton
-    ImgurService provideMovieService(RestAdapter restAdapter) {
-        return restAdapter.create(ImgurService.class);
+    ImgurService provideImgurService(Retrofit retrofit) {
+        return retrofit.create(ImgurService.class);
     }
 
 
-}*/
+}

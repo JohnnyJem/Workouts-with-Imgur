@@ -15,9 +15,11 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class MainActivityPresenter extends MvpBasePresenter<MainActivityView> {
 
-    private CompositeSubscription subscriptions;
+
     @Inject ImgurApplication imgurApplication;
     @Inject RxBus rxBus;
+
+    private CompositeSubscription subscriptions;
 
     //constructor that will be passed an appComponent to init Dependency Injection
     public MainActivityPresenter(AppComponent appComponent){
@@ -52,7 +54,7 @@ public class MainActivityPresenter extends MvpBasePresenter<MainActivityView> {
     }
 
     void setData(){
-        //getView().setData();
+        //getView().setAlbum();
     }
 
     void handleError(Throwable var1, boolean var2){

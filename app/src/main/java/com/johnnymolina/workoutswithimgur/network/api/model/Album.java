@@ -4,8 +4,11 @@ package com.johnnymolina.workoutswithimgur.network.api.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class Image {
+
+public class Album {
 
     @SerializedName("id")
     @Expose
@@ -19,30 +22,33 @@ public class Image {
     @SerializedName("datetime")
     @Expose
     private int datetime;
-    @SerializedName("type")
+    @SerializedName("cover")
     @Expose
-    private String type;
-    @SerializedName("animated")
+    private String cover;
+    @SerializedName("account_url")
     @Expose
-    private boolean animated;
-    @SerializedName("width")
+    private String accountUrl;
+    @SerializedName("account_id")
     @Expose
-    private int width;
-    @SerializedName("height")
+    private int accountId;
+    @SerializedName("privacy")
     @Expose
-    private int height;
-    @SerializedName("size")
+    private String privacy;
+    @SerializedName("layout")
     @Expose
-    private int size;
+    private String layout;
     @SerializedName("views")
     @Expose
     private int views;
-
-    private int bandwidth;
-
     @SerializedName("link")
     @Expose
     private String link;
+    @SerializedName("images_count")
+    @Expose
+    private int imagesCount;
+    @SerializedName("images")
+    @Expose
+    private List<Image> images = new ArrayList<Image>();
 
     /**
      * 
@@ -119,91 +125,91 @@ public class Image {
     /**
      * 
      * @return
-     *     The type
+     *     The cover
      */
-    public String getType() {
-        return type;
+    public String getCover() {
+        return cover;
     }
 
     /**
      * 
-     * @param type
-     *     The type
+     * @param cover
+     *     The cover
      */
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    /**
-     * 
-     * @return
-     *     The animated
-     */
-    public boolean isAnimated() {
-        return animated;
-    }
-
-    /**
-     * 
-     * @param animated
-     *     The animated
-     */
-    public void setAnimated(boolean animated) {
-        this.animated = animated;
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 
     /**
      * 
      * @return
-     *     The width
+     *     The accountUrl
      */
-    public int getWidth() {
-        return width;
+    public String getAccountUrl() {
+        return accountUrl;
     }
 
     /**
      * 
-     * @param width
-     *     The width
+     * @param accountUrl
+     *     The account_url
      */
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    /**
-     * 
-     * @return
-     *     The height
-     */
-    public int getHeight() {
-        return height;
-    }
-
-    /**
-     * 
-     * @param height
-     *     The height
-     */
-    public void setHeight(int height) {
-        this.height = height;
+    public void setAccountUrl(String accountUrl) {
+        this.accountUrl = accountUrl;
     }
 
     /**
      * 
      * @return
-     *     The size
+     *     The accountId
      */
-    public int getSize() {
-        return size;
+    public int getAccountId() {
+        return accountId;
     }
 
     /**
      * 
-     * @param size
-     *     The size
+     * @param accountId
+     *     The account_id
      */
-    public void setSize(int size) {
-        this.size = size;
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
+
+    /**
+     * 
+     * @return
+     *     The privacy
+     */
+    public String getPrivacy() {
+        return privacy;
+    }
+
+    /**
+     * 
+     * @param privacy
+     *     The privacy
+     */
+    public void setPrivacy(String privacy) {
+        this.privacy = privacy;
+    }
+
+    /**
+     * 
+     * @return
+     *     The layout
+     */
+    public String getLayout() {
+        return layout;
+    }
+
+    /**
+     * 
+     * @param layout
+     *     The layout
+     */
+    public void setLayout(String layout) {
+        this.layout = layout;
     }
 
     /**
@@ -227,24 +233,6 @@ public class Image {
     /**
      * 
      * @return
-     *     The bandwidth
-     */
-    public int getBandwidth() {
-        return bandwidth;
-    }
-
-    /**
-     * 
-     * @param bandwidth
-     *     The bandwidth
-     */
-    public void setBandwidth(int bandwidth) {
-        this.bandwidth = bandwidth;
-    }
-
-    /**
-     * 
-     * @return
      *     The link
      */
     public String getLink() {
@@ -258,6 +246,42 @@ public class Image {
      */
     public void setLink(String link) {
         this.link = link;
+    }
+
+    /**
+     * 
+     * @return
+     *     The imagesCount
+     */
+    public int getImagesCount() {
+        return imagesCount;
+    }
+
+    /**
+     * 
+     * @param imagesCount
+     *     The images_count
+     */
+    public void setImagesCount(int imagesCount) {
+        this.imagesCount = imagesCount;
+    }
+
+    /**
+     * 
+     * @return
+     *     The images
+     */
+    public List<Image> getImages() {
+        return images;
+    }
+
+    /**
+     * 
+     * @param images
+     *     The images
+     */
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 
 }
