@@ -17,6 +17,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.hannesdorfmann.mosby.mvp.viewstate.RestorableViewState;
+import com.jaeger.library.StatusBarUtil;
 import com.johnnymolina.workoutswithimgur.ImgurApplication;
 import com.johnnymolina.workoutswithimgur.R;
 import com.johnnymolina.workoutswithimgur.mosby.MosbyMvpViewStateActivity;
@@ -90,6 +91,9 @@ public class MainActivity
                             return false;
                         }
                     }).build();
+
+            StatusBarUtil.setTranslucent(this);
+            StatusBarUtil.setTransparent(this);
         }
 
 

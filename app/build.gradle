@@ -60,7 +60,7 @@ dependencies {
     compile 'com.trello:rxlifecycle:0.5.0'
     compile 'com.jakewharton.rxbinding:rxbinding:0.4.0'
 
-
+    //Dependency Injection
     compile 'com.google.dagger:dagger:2.1'
     apt 'com.google.dagger:dagger-compiler:2.1'
     compile 'com.jakewharton:butterknife:7.0.1'
@@ -86,6 +86,8 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.ms-square:expandableTextView:0.1.4'
     compile 'com.fivehundredpx:greedo-layout:1.0.0'
+    compile 'com.jaeger.statusbaruitl:library:1.0.0'
+
 
     //Convenience
     compile 'com.hannesdorfmann.fragmentargs:annotation:3.0.2'

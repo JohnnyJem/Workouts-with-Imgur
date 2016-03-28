@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -43,6 +42,7 @@ import timber.log.Timber;
 public class MainFragment extends MosbyMvpViewStateFragment
         <MainFragmentView, MainFragmentPresenter>
         implements MainFragmentView {
+
     public static final int VIEWFLIPPER_RESULTS = 0;
     public static final int VIEWFLIPPER_LOADING = 1;
 
@@ -56,11 +56,10 @@ public class MainFragment extends MosbyMvpViewStateFragment
     @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
     @Bind(R.id.main_fragment_fab) FloatingActionButton floatingActionButton;
     @Bind(R.id.realm_recycler_view) RealmRecyclerView realmRecyclerView;
+
     public MainFragment() {
 
     }
-
-
     /*---------------------Lifecycle Methods----------------------------*/
     @Override
     public void onCreate(Bundle savedInstanceState) {
