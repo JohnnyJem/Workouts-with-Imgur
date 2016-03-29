@@ -5,6 +5,8 @@ import com.johnnymolina.workoutswithimgur.network.ImgurService;
 import com.johnnymolina.workoutswithimgur.network.NetworkModule;
 import com.johnnymolina.workoutswithimgur.other.RxBus;
 import com.johnnymolina.workoutswithimgur.views.DetailsFragment;
+import com.johnnymolina.workoutswithimgur.views.DownloadFragment;
+import com.johnnymolina.workoutswithimgur.views.DownloadFragmentPresenter;
 import com.johnnymolina.workoutswithimgur.views.MainActivity;
 import com.johnnymolina.workoutswithimgur.views.MainActivityPresenter;
 import com.johnnymolina.workoutswithimgur.views.MainFragment;
@@ -38,6 +40,10 @@ public interface AppComponent {
 
     void inject(MainFragment fragment);
     void inject(MainFragmentPresenter presenter);
+
+    void inject(DownloadFragment fragment);
+    void inject(DownloadFragmentPresenter presenter);
+
 
     void inject(DetailsFragment fragment);
 

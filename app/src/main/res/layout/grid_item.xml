@@ -10,12 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:background="@color/background"
-        android:scaleType="centerCrop" />
+        android:background="@color/background" />
     <TextView
         android:id="@+id/album_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
     <TextView
         android:id="@+id/album_description"
         android:layout_width="match_parent"
@@ -23,5 +23,6 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:singleLine="true"
-        android:paddingBottom="8dp" />
+        android:paddingBottom="8dp"
+        android:visibility="gone"/>
 </LinearLayout>

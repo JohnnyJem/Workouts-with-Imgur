@@ -1,0 +1,36 @@
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.DownloadFragment"
+    tools:ignore="MergeRootFrame">
+    <ViewFlipper
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/view_flipper">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_downloaded"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background">
+            <ProgressBar
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:indeterminate="true"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+    </ViewFlipper>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/download_fragment_fab"
+        android:src="@drawable/ic_done"
+        style="@style/floating_action_button"
+        app:fabSize="normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"/>
+</android.support.design.widget.CoordinatorLayout>

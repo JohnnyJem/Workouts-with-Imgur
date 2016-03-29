@@ -23,9 +23,6 @@ import com.johnnymolina.workoutswithimgur.R;
 import com.johnnymolina.workoutswithimgur.mosby.MosbyMvpViewStateActivity;
 import com.johnnymolina.workoutswithimgur.other.RxBus;
 import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import javax.inject.Inject;
 
@@ -44,6 +41,7 @@ public class MainActivity
     public static final String KEY_SHOW_ACTION = "com.johnnymolina.workoutswithimgur.views.MainActivity.SHOW_ACTION";
     public static final String FRAGMENT_TAG_MAIN = "mainFragmentTag";
     public static final String FRAGMENT_TAG_DETAILS = "detailsFragmentTag";
+    public static final String FRAGMENT_TAG_DOWNLOAD = "downloadFragmentTag";
 
     public static final int VIEWFLIPPER_RESULTS = 0;
     public static final int VIEWFLIPPER_LOADING = 1;
@@ -73,28 +71,27 @@ public class MainActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        // Handle Toolbar and Drawer setup
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            toolbar.setTitle(R.string.drawer_item_menu_drawer);
-            result = new DrawerBuilder()
-                    .withActivity(this)
-                    .withToolbar(toolbar)
-                    .inflateMenu(R.menu.drawer_menu)
-                    .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                        @Override
-                        public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                            if (drawerItem instanceof Nameable) {
-                                Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
-                            }
-
-                            return false;
-                        }
-                    }).build();
-
-            StatusBarUtil.setTranslucent(this);
-            StatusBarUtil.setTransparent(this);
-        }
+//        // Handle Toolbar and Drawer setup
+//        if (toolbar != null) {
+//            setSupportActionBar(toolbar);
+//            toolbar.setTitle(R.string.drawer_item_menu_drawer);
+//            result = new DrawerBuilder()
+//                    .withActivity(this)
+//                    .withToolbar(toolbar)
+//                    .inflateMenu(R.menu.drawer_menu)
+//                    .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+//                        @Override
+//                        public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+//                            if (drawerItem instanceof Nameable) {
+//                                Toast.makeText(MainActivity.this, ((Nameable) drawerItem).getName().getText(MainActivity.this), Toast.LENGTH_SHORT).show();
+//                            }
+//                            return false;
+//                        }
+//                    }).build();
+//        }
+        setSupportActionBar(toolbar);
+        StatusBarUtil.setTranslucent(MainActivity.this);
+        StatusBarUtil.setTransparent(MainActivity.this);
 
 
         // Check for previous fragments
@@ -188,6 +185,10 @@ public class MainActivity
         return (MainFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_MAIN);
     }
 
+    private DownloadFragment findDownloadFragment(){
+        return (DownloadFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DOWNLOAD);
+    }
+
     /**
      * @return true if a fragment has been removed, otherwise false
      */
@@ -203,6 +204,35 @@ public class MainActivity
         return false;
     }
 
+
+     protected boolean showDownloadFragment(String query) {
+         DownloadFragment downloadFragment = findDownloadFragment();
+         if (downloadFragment != null) {
+             if (rightPane != null) {
+                 rightPane.setVisibility(View.GONE);
+                 getSupportFragmentManager()
+                         .beginTransaction()
+                         .replace(R.id.leftPane, downloadFragment, FRAGMENT_TAG_DOWNLOAD)
+                         .commit();
+                 return true;
+             }
+         }else {
+             downloadFragment = new DownloadFragmentBuilder()
+                     .query(query)
+                     .build();
+             getSupportFragmentManager()
+                     .beginTransaction()
+                     .replace(R.id.leftPane, downloadFragment, FRAGMENT_TAG_DOWNLOAD)
+                     .commit();
+             return true;
+         }
+         return false;
+     }
+
+    private boolean removeDownloadFragment(){
+        return false;
+    }
+
         @Override
         public boolean onCreateOptionsMenu (Menu menu){
             getMenuInflater().inflate(R.menu.toolbar_menu, menu);
@@ -213,7 +243,7 @@ public class MainActivity
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    findMainFragment().loadData(query);
+                    showDownloadFragment(query);
                     return false;
                 }
 

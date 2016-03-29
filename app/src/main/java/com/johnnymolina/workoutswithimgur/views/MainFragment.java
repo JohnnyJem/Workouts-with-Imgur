@@ -28,14 +28,12 @@ import com.johnnymolina.workoutswithimgur.other.RxBus;
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
 import io.realm.RealmBasedRecyclerViewAdapter;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.RealmViewHolder;
-import io.realm.Sort;
 import timber.log.Timber;
 
 @FragmentWithArgs
@@ -88,9 +86,6 @@ public class MainFragment extends MosbyMvpViewStateFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         floatingActionButton.setVisibility(View.GONE);
-
-        RealmResults<RealmAlbum> realmAlbums = realm.where(RealmAlbum.class)
-                            .findAllSorted("id", Sort.ASCENDING);
 
 //        realmAdapter = new RVRealmAdapter(getContext(),realmAlbums,true,true);
 //        realmRecyclerView.setAdapter(realmAdapter);
@@ -195,16 +190,6 @@ public class MainFragment extends MosbyMvpViewStateFragment
     }
 
      /* ----------------------------Other Methods-----------------*/
-
-    @OnClick(R.id.main_fragment_fab)
-    public void downloadIntoRealm(){
-        presenter.saveToRealm();
-    }
-
-//    protected void setup(){
-//
-//    }
-
 
     private void asyncRefreshAllQuotes() {
         AsyncTask<Void, Void, Void> remoteItem = new AsyncTask<Void, Void, Void>() {
