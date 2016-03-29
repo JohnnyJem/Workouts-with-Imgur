@@ -1,4 +1,4 @@
-package com.johnnymolina.workoutswithimgur.other;
+package com.johnnymolina.workoutswithimgur.views.other;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

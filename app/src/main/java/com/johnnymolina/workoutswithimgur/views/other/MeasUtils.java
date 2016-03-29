@@ -1,4 +1,4 @@
-package com.johnnymolina.workoutswithimgur.other;
+package com.johnnymolina.workoutswithimgur.views.other;
 
 import android.content.Context;
 import android.util.TypedValue;

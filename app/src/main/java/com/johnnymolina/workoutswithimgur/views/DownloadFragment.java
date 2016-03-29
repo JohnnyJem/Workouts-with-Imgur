@@ -1,6 +1,5 @@
 package com.johnnymolina.workoutswithimgur.views;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,13 +9,10 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.bumptech.glide.Glide;
 import com.fivehundredpx.greedolayout.GreedoLayoutManager;
-import com.fivehundredpx.greedolayout.GreedoLayoutSizeCalculator;
 import com.fivehundredpx.greedolayout.GreedoSpacingItemDecoration;
 import com.hannesdorfmann.fragmentargs.annotation.Arg;
 import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
@@ -25,11 +21,9 @@ import com.johnnymolina.workoutswithimgur.ImgurApplication;
 import com.johnnymolina.workoutswithimgur.R;
 import com.johnnymolina.workoutswithimgur.mosby.MosbyMvpViewStateFragment;
 import com.johnnymolina.workoutswithimgur.network.api.model.Album;
-import com.johnnymolina.workoutswithimgur.network.api.model.Image;
-import com.johnnymolina.workoutswithimgur.other.MeasUtils;
+import com.johnnymolina.workoutswithimgur.views.other.MeasUtils;
 import com.johnnymolina.workoutswithimgur.other.RxBus;
-
-import java.util.List;
+import com.johnnymolina.workoutswithimgur.views.adapters.DownloadedMediaAdapter;
 
 import javax.inject.Inject;
 
@@ -222,72 +216,5 @@ public class DownloadFragment
         presenter.saveToRealm();
     }
 
-    public class DownloadedMediaAdapter
-            extends RecyclerView.Adapter<DownloadedMediaAdapter.ViewHolder>
-            implements GreedoLayoutSizeCalculator.SizeCalculatorDelegate {
-
-        public DownloadedMediaAdapter(Context context, List<Image> imageList){
-            this.mContext = context;
-            this.mImageList = imageList;
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            private ImageView mImageView;
-
-            public ViewHolder(ImageView imageView) {
-                super(imageView);
-                mImageView = imageView;
-            }
-        }
-
-        private List<Image> mImageList;
-        private Context mContext;
-
-        public void setImages(List<Image> imageList){
-            this.mImageList = imageList;
-        }
-
-        @Override
-        public double aspectRatioForIndex(int index) {
-            // Precaution, have better handling for this in greedo-layout
-            if (index >= getItemCount()) return 1.0;
-            return  mImageList.get(index).getWidth() / (double) mImageList.get(index).getHeight();
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            ImageView imageView = new ImageView(mContext);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-            ));
-
-            return new ViewHolder(imageView);
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder viewHolder, int position) {
-            Image image = mImageList.get(position);
-            String imageThumbnailUrl = "http://i.imgur.com/" + image.getId() + "t.png";
-
-            Glide.with(mContext)
-                        .load(imageThumbnailUrl)
-                        .asBitmap()
-                        .fitCenter()
-                        .placeholder(R.drawable.icon175x175)
-                        .into(viewHolder.mImageView);
-        }
-
-        @Override
-        public int getItemCount() {
-            if (mImageList!=null) {
-                return mImageList.size();
-            }
-            return 0;
-        }
-
-
-    }
 
 }

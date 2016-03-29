@@ -1,6 +1,5 @@
 package com.johnnymolina.workoutswithimgur.views;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,12 +8,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.bumptech.glide.Glide;
 import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
 import com.hannesdorfmann.mosby.mvp.viewstate.RestorableViewState;
 import com.johnnymolina.workoutswithimgur.ImgurApplication;
@@ -22,18 +18,15 @@ import com.johnnymolina.workoutswithimgur.R;
 import com.johnnymolina.workoutswithimgur.mosby.MosbyMvpViewStateFragment;
 import com.johnnymolina.workoutswithimgur.network.api.model.Album;
 import com.johnnymolina.workoutswithimgur.network.api.model.realm.RealmAlbum;
-import com.johnnymolina.workoutswithimgur.network.api.model.realm.RealmImage;
 import com.johnnymolina.workoutswithimgur.other.RxBus;
+import com.johnnymolina.workoutswithimgur.views.adapters.RVRealmAdapter;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
-import io.realm.RealmBasedRecyclerViewAdapter;
-import io.realm.RealmList;
 import io.realm.RealmResults;
-import io.realm.RealmViewHolder;
 import timber.log.Timber;
 
 @FragmentWithArgs
@@ -220,54 +213,7 @@ public class MainFragment extends MosbyMvpViewStateFragment
         remoteItem.execute();
     }
 
-    public class RVRealmAdapter
-            extends RealmBasedRecyclerViewAdapter<RealmAlbum, RVRealmAdapter.ViewHolder> {
 
-        public RVRealmAdapter(
-                Context context,
-                RealmResults<RealmAlbum> realmResults,
-                boolean automaticUpdate,
-                boolean animateIdType) {
-            super(context, realmResults, automaticUpdate, animateIdType);
-        }
-
-        public class ViewHolder extends RealmViewHolder {
-
-            public ImageView image;
-            public TextView title;
-            public TextView description;
-
-            public ViewHolder(View container) {
-                super(container);
-                this.image = (ImageView) container.findViewById(R.id.thumbnail);
-                this.title = (TextView) container.findViewById(R.id.album_title);
-                this.description = (TextView) container.findViewById(R.id.album_description);
-            }
-        }
-
-        @Override
-        public ViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int viewType) {
-            View v = inflater.inflate(R.layout.grid_item, viewGroup, false);
-            ViewHolder vh = new ViewHolder(v);
-            return vh;
-        }
-
-        @Override
-        public void onBindRealmViewHolder(ViewHolder viewHolder, int position) {
-            final RealmAlbum realmAlbum = realmResults.get(position);
-            viewHolder.title.setText(realmAlbum.getImages().get(position).getTitle());
-            viewHolder.description.setText(realmAlbum.getImages().get(position).getDescription());
-            final RealmList<RealmImage> realmImages = realmAlbum.getImages();
-            if (realmImages != null && !realmImages.isEmpty()) {
-                Glide.with(MainFragment.this.getContext())
-                        .load(realmImages.get(position).getLink())
-                        .into(viewHolder.image);
-            } else {
-                viewHolder.image.setImageResource(R.drawable.icon175x175);
-            }
-        }
-
-    }
 
 }
 
