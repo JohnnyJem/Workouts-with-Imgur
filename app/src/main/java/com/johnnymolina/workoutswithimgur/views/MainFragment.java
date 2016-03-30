@@ -4,7 +4,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +49,7 @@ public class MainFragment extends MosbyMvpViewStateFragment
     @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
     @Bind(R.id.main_fragment_fab) FloatingActionButton floatingActionButton;
     @Bind(R.id.realm_recycler_view) RealmRecyclerView realmRecyclerView;
+    @Bind(R.id.cl_main_fragment) CoordinatorLayout coordinatorLayout;
 
     public MainFragment() {
 
@@ -56,6 +59,11 @@ public class MainFragment extends MosbyMvpViewStateFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+
+        if (savedInstanceState!=null){
+
+        }
+
     }
 
     @Override
@@ -133,8 +141,13 @@ public class MainFragment extends MosbyMvpViewStateFragment
     public void showError(Throwable e) {
         viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
         Timber.e(e,e.getMessage().toString());
-        Toast.makeText(getContext(), "error: " + e.getMessage().toString(), Toast.LENGTH_LONG).show();
+        Snackbar.make(coordinatorLayout, "error: " + e.getMessage().toString(),Snackbar.LENGTH_SHORT).show();
 
+        if (isFragmentAlive()){
+            String message = !((MainActivity) getActivity()).isNetworkAvailable() ?
+                    "No Network Connection" :"Invalid Album Id";
+            Snackbar.make(coordinatorLayout, message,Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -212,6 +225,8 @@ public class MainFragment extends MosbyMvpViewStateFragment
         };
         remoteItem.execute();
     }
+
+
 
 
 

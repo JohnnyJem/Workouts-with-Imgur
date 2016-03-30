@@ -62,7 +62,6 @@ public class MainFragmentPresenter extends MvpBasePresenter<MainFragmentView> {
 
            album = null;
 
-
             //we ask the presenter to perform a search with a query
             imgurService.dataRequest(query) //subscribes to the Observable provided by Retrofit and lets the View know what to display
                     .delay(5, TimeUnit.SECONDS) //wait 5 seconds

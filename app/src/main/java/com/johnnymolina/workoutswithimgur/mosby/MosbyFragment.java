@@ -99,4 +99,11 @@ public abstract class MosbyFragment extends Fragment {
     protected int getLayoutRes() {
         return 0;
     }
+
+
+    /*------------------------------Non-Mosby Methods------------------------*/
+
+    protected boolean isFragmentAlive() {
+        return getActivity() != null && isAdded() && !isDetached() && getView() != null && !isRemoving();
+    }
 }

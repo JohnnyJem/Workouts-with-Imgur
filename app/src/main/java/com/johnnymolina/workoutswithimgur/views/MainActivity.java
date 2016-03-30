@@ -2,7 +2,10 @@ package com.johnnymolina.workoutswithimgur.views;
 
 import android.animation.LayoutTransition;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -98,12 +101,6 @@ public class MainActivity
         mainFragment = findMainFragment();
         detailsFragment = findDetailsFragment();
 
-        if (detailsFragment != null) {
-            // details fragment available, so make it visible
-            Timber.i("DetailFragment is not null");
-            rightPane.setVisibility(View.VISIBLE);
-        }
-
         if (paneContainer != null) {
             // Enable animation
             Timber.i("paneContainer is not null");
@@ -114,8 +111,20 @@ public class MainActivity
 
         if (mainFragment == null) {
             // First app start, so start with this
-            showViews(true);
+            if (savedInstanceState==null) {
+                initStartupViews(true);
+            }else {
+
+            }
         }
+
+        if (detailsFragment != null) {
+            // details fragment available, so make it visible
+            Timber.i("DetailFragment is not null");
+            rightPane.setVisibility(View.VISIBLE);
+        }
+
+
 
     }
 
@@ -156,10 +165,11 @@ public class MainActivity
         //TODO: get parcelable extras here to show details.
     }
 
-    private void showViews(boolean removeDetailsFragment) {
+    private void initStartupViews(boolean removeDetailsFragment) {
         MainFragment fragment = new MainFragmentBuilder().build();
 
-        getSupportFragmentManager().beginTransaction()
+        getSupportFragmentManager()
+                .beginTransaction()
                 .replace(R.id.leftPane, fragment, FRAGMENT_TAG_MAIN)
                 .commit();
 
@@ -212,7 +222,8 @@ public class MainActivity
                  rightPane.setVisibility(View.GONE);
                  getSupportFragmentManager()
                          .beginTransaction()
-                         .replace(R.id.leftPane, downloadFragment, FRAGMENT_TAG_DOWNLOAD)
+                         .replace(R.id.leftPane, downloadFragment)
+                         .addToBackStack(FRAGMENT_TAG_MAIN)
                          .commit();
                  return true;
              }
@@ -274,10 +285,16 @@ public class MainActivity
             return super.onOptionsItemSelected(item);
         }
 
+        @Override
+        public void onBackPressed() {
+            if (getFragmentManager().getBackStackEntryCount() > 0 ){
+                getFragmentManager().popBackStack();
+            } else {
+                super.onBackPressed();
+            }
+        }
 
-
-
-     /* ------------------Presenter Interaction Methods-----------------*/
+    /* ------------------Presenter Interaction Methods-----------------*/
 
         @Override
         public void loadData ( boolean var1){
@@ -335,6 +352,14 @@ public class MainActivity
         public MainActivityViewState getViewState () {
             return (MainActivityViewState) super.getViewState();
         }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
 
     }
 
