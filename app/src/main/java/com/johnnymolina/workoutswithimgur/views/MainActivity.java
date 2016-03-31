@@ -68,7 +68,7 @@ public class MainActivity
     // contains leftPane + rightPane
     @Nullable @Bind(R.id.paneContainer) ViewGroup paneContainer;
     private Drawer result = null;
-
+    private Menu menu = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,6 +142,7 @@ public class MainActivity
                                 // If many objects use switch.
                             }
                         }));
+
     }
 
     @Override
@@ -207,7 +208,10 @@ public class MainActivity
         if (detailsFragment != null) {
             if (rightPane != null) {
                 rightPane.setVisibility(View.GONE);
-                getSupportFragmentManager().beginTransaction().remove(detailsFragment).commit();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .remove(detailsFragment)
+                        .commit();
                 return true;
             }
         }
@@ -222,7 +226,7 @@ public class MainActivity
                  rightPane.setVisibility(View.GONE);
                  getSupportFragmentManager()
                          .beginTransaction()
-                         .replace(R.id.leftPane, downloadFragment)
+                         .replace(R.id.leftPane, downloadFragment, FRAGMENT_TAG_DOWNLOAD)
                          .addToBackStack(FRAGMENT_TAG_MAIN)
                          .commit();
                  return true;
@@ -231,9 +235,11 @@ public class MainActivity
              downloadFragment = new DownloadFragmentBuilder()
                      .query(query)
                      .build();
+
              getSupportFragmentManager()
                      .beginTransaction()
                      .replace(R.id.leftPane, downloadFragment, FRAGMENT_TAG_DOWNLOAD)
+                     .addToBackStack(FRAGMENT_TAG_MAIN)
                      .commit();
              return true;
          }
@@ -246,6 +252,7 @@ public class MainActivity
 
         @Override
         public boolean onCreateOptionsMenu (Menu menu){
+            this.menu = menu;
             getMenuInflater().inflate(R.menu.toolbar_menu, menu);
             // Retrieve the SearchView and plug it into SearchManager
             final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
@@ -254,7 +261,14 @@ public class MainActivity
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    showDownloadFragment(query);
+                    DownloadFragment myFragment =
+                            (DownloadFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DOWNLOAD);
+                    if (myFragment != null && myFragment.isVisible()) {
+                        myFragment.loadData(query);
+                    }else {
+                        showDownloadFragment(query);
+                    }
+                    (menu.findItem(R.id.action_search)).collapseActionView();
                     return false;
                 }
 
@@ -265,6 +279,7 @@ public class MainActivity
             });
             return true;
         }
+
 
         @Override
         public boolean onOptionsItemSelected (MenuItem item){
@@ -287,8 +302,8 @@ public class MainActivity
 
         @Override
         public void onBackPressed() {
-            if (getFragmentManager().getBackStackEntryCount() > 0 ){
-                getFragmentManager().popBackStack();
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0 ){
+                getSupportFragmentManager().popBackStack();
             } else {
                 super.onBackPressed();
             }

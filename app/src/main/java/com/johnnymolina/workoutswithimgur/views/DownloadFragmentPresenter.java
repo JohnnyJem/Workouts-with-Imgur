@@ -86,7 +86,6 @@ public class DownloadFragmentPresenter extends MvpBasePresenter<DownloadFragment
 
                 });
     }
-    //getView().showLoading;
 
 
     public void loadRealmData(){

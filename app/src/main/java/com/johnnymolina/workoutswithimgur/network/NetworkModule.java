@@ -1,5 +1,6 @@
 package com.johnnymolina.workoutswithimgur.network;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.johnnymolina.workoutswithimgur.BuildConfig;
@@ -59,20 +60,29 @@ public class NetworkModule {
                 Timber.tag("OkHttp").d(message);
             }
         });
-
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
         return logging;
     }
 
 
     @Provides
     @Singleton
+    StethoInterceptor provideStethoInterceptor(){
+        StethoInterceptor stethoInterceptor = new StethoInterceptor();
+        return stethoInterceptor;
+    }
+
+
+    @Provides
+    @Singleton
     OkHttpClient provideOkHttpClient(
-            Interceptor Interceptor, HttpLoggingInterceptor httpLoggingInterceptor) {
+            Interceptor Interceptor,
+            HttpLoggingInterceptor httpLoggingInterceptor,
+            StethoInterceptor stethoInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
         builder.interceptors().add(Interceptor);
         builder.interceptors().add(httpLoggingInterceptor);
+        builder.addNetworkInterceptor(stethoInterceptor);
         OkHttpClient client = builder.build();
         return client;
     }

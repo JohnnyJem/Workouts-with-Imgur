@@ -1,6 +1,5 @@
 package com.johnnymolina.workoutswithimgur;
 
-import com.google.gson.Gson;
 import com.johnnymolina.workoutswithimgur.network.ImgurService;
 import com.johnnymolina.workoutswithimgur.network.NetworkModule;
 import com.johnnymolina.workoutswithimgur.other.RxBus;
@@ -15,8 +14,6 @@ import com.johnnymolina.workoutswithimgur.views.MainFragmentPresenter;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
 
 /**
  * Created by Johnny Molina on 7/19/2015.
@@ -44,16 +41,12 @@ public interface AppComponent {
     void inject(DownloadFragment fragment);
     void inject(DownloadFragmentPresenter presenter);
 
-
     void inject(DetailsFragment fragment);
 
 
-
     ImgurApplication imgurApplication();
+
     RxBus rxBus();
 
-    Gson gson();
-    OkHttpClient okHttpClient();
-    Retrofit retrofit();
     ImgurService imgurService();
 }

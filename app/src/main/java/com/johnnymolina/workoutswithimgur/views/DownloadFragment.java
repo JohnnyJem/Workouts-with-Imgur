@@ -3,7 +3,9 @@ package com.johnnymolina.workoutswithimgur.views;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -60,6 +62,7 @@ public class DownloadFragment
     @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
     @Bind(R.id.download_fragment_fab) FloatingActionButton floatingActionButton;
     @Bind(R.id.rv_downloaded) RecyclerView recyclerView;
+    @Bind(R.id.cl_download_fragment) CoordinatorLayout coordinatorLayout;
 
 
     GreedoLayoutManager layoutManager;
@@ -149,16 +152,13 @@ public class DownloadFragment
 
             int spacing = MeasUtils.dpToPx(4, getContext());
             recyclerView.addItemDecoration(new GreedoSpacingItemDecoration(spacing));
-
-            Toast.makeText(
-                    getContext(),
+            Snackbar.make(coordinatorLayout,
                     "Loaded " + album.getTitle() + " images("+ album.getImagesCount() +")",
-                    Toast.LENGTH_SHORT).show();
+                    Snackbar.LENGTH_SHORT).show();
         }else {
-            Toast.makeText(
-                    getContext(),
+            Snackbar.make(coordinatorLayout,
                     "Data not Loaded",
-                    Toast.LENGTH_SHORT).show();
+                    Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -166,8 +166,13 @@ public class DownloadFragment
     public void showError(Throwable e) {
         viewFlipper.setDisplayedChild(VIEWFLIPPER_RESULTS);
         Timber.e(e,e.getMessage().toString());
-        Toast.makeText(getContext(), "error: " + e.getMessage().toString(), Toast.LENGTH_LONG).show();
+        Snackbar.make(coordinatorLayout, "error: " + e.getMessage().toString(),Snackbar.LENGTH_SHORT).show();
 
+        if (isFragmentAlive()){
+            String message = !((MainActivity) getActivity()).isNetworkAvailable() ?
+                    "No Network Connection" :"Invalid Album Id";
+            Snackbar.make(coordinatorLayout, message,Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
