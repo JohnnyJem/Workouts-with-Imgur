@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +50,8 @@ public class MainFragment extends MosbyMvpViewStateFragment
 
     @Bind(R.id.view_flipper) ViewFlipper viewFlipper;
     @Bind(R.id.main_fragment_fab) FloatingActionButton floatingActionButton;
-    @Bind(R.id.realm_recycler_view) RealmRecyclerView realmRecyclerView;
+    @Bind(R.id.main_fragment_srl) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.main_fragment_rv) RealmRecyclerView realmRecyclerView;
     @Bind(R.id.cl_main_fragment) CoordinatorLayout coordinatorLayout;
 
     public MainFragment() {
@@ -63,7 +66,6 @@ public class MainFragment extends MosbyMvpViewStateFragment
         if (savedInstanceState!=null){
 
         }
-
     }
 
     @Override
@@ -95,11 +97,20 @@ public class MainFragment extends MosbyMvpViewStateFragment
 //                new RealmRecyclerView.OnRefreshListener() {
 //                    @Override
 //                    public void onRefresh() {
-//                        asyncRefreshAllQuotes();
+//                        asyncRefreshAllData();
 //                    }
 //                }
 //        );
 
+//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                // Your code to refresh the list here.
+//                // Make sure you call swipeContainer.setRefreshing(false)
+//                // once the network request has completed successfully.
+//                //asyncRefreshAllData();
+//            }
+//        });
     }
 
     @Override
@@ -197,7 +208,7 @@ public class MainFragment extends MosbyMvpViewStateFragment
 
      /* ----------------------------Other Methods-----------------*/
 
-    private void asyncRefreshAllQuotes() {
+    private void asyncRefreshAllData() {
         AsyncTask<Void, Void, Void> remoteItem = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -205,6 +216,7 @@ public class MainFragment extends MosbyMvpViewStateFragment
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
+
                 }
 
                 final RealmResults<RealmAlbum> all = realm.where(RealmAlbum.class).findAll();
@@ -220,7 +232,12 @@ public class MainFragment extends MosbyMvpViewStateFragment
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                realmRecyclerView.setRefreshing(false);
+                // Remember to CLEAR OUT old items before appending in the new ones
+                //adapter.clear
+                // ...the data has come back, add new items to your adapter...
+                //adapter.addAll(...);
+                // Now we call setRefreshing(false) to signal refresh has finished
+                swipeRefreshLayout.setRefreshing(false);
             }
         };
         remoteItem.execute();

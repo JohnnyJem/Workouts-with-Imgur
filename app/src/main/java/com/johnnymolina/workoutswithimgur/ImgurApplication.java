@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.facebook.stetho.Stetho;
 import com.johnnymolina.workoutswithimgur.other.ReleaseTree;
+import com.polidea.hierarchyviewer.HierarchyViewer;
 import com.squareup.leakcanary.LeakCanary;
 
 import timber.log.Timber;
@@ -27,6 +28,7 @@ public class ImgurApplication extends Application {
                 }
             });
             LeakCanary.install(this);
+            HierarchyViewer.start(this);
         }else{
             //release mode
             Timber.plant(new ReleaseTree());

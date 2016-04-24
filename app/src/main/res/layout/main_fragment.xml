@@ -17,15 +17,19 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:fillViewport="true">
-        <co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
-            android:id="@+id/realm_recycler_view"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/main_fragment_srl"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:rrvIsRefreshable="true"
-            app:rrvEmptyLayoutId="@layout/empty_view"
-            app:rrvLayoutType="LinearLayout"
-            app:rrvSwipeToDelete="true"
-            />
+            android:layout_height="match_parent">
+            <co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
+                android:id="@+id/main_fragment_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:rrvIsRefreshable="true"
+                app:rrvEmptyLayoutId="@layout/empty_view"
+                app:rrvLayoutType="LinearLayout"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
     </android.support.v4.widget.NestedScrollView>
         <FrameLayout
             android:layout_width="match_parent"
