@@ -8,6 +8,8 @@ build/
 .idea/.name
 *.iml
 *.ipr
+#where we store our keys.
+/apikeystore.properties
 *.iws
 
 # built application files
